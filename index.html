@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atividades</title>
+</head>
+<body>
+    <h1>Enviar Atividade</h1>
+    <form id="uploadForm">
+        <input type="file" name="file" accept=".pdf" required>
+        <button type="submit">Enviar</button>
+    </form>
+
+    <h1>Atividades Disponíveis</h1>
+    <ul id="file-list"></ul>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch('https://SEU_ENDERECO_DE_BACKEND/upload', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.text())
+              .then(data => {
+                  alert(data);
+              });
+        });
+
+        fetch('https://SEU_ENDERECO_DE_BACKEND/api/files')
+            .then(response => response.json())
+            .then(data => {
+                const fileList = document.getElementById('file-list');
+                data.files.forEach(file => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<a href="https://SEU_ENDERECO_DE_BACKEND/uploads/${file}" download>${file}</a>`;
+                    fileList.appendChild(li);
+                });
+            })
+            .catch(error => console.error('Error fetching files:', error));
+    </script>
+</body>
+</html>
